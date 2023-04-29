@@ -1,7 +1,9 @@
+import { NOT_EKLE, NOT_SIL } from "./actions";
+
 const s10chLocalStorageKey = "s10ch";
 
 const baslangicDegerleri = {
-  notlar: [
+  notlar: JSON.parse(localStorage.getItem(s10chLocalStorageKey)) || [
     {
       id: "75g1IyB8JLehAr0Lr5v3p",
       date: "Fri Feb 03 2023 09:40:27 GMT+0300 (GMT+03:00)",
@@ -15,15 +17,30 @@ function localStorageStateYaz(key, data) {
 }
 
 function localStorageStateOku(key) {
-  return JSON.parse(localStorage.getItem(key));
+  const data = localStorage.getItem(key);
+  return data ? JSON.parse(data) : null;
 }
 
-function baslangicNotlariniGetir(key) {
-  const eskiNotlar = localStorage.getItem(key);
+export function reducer(state = baslangicDegerleri, action) {
+  switch (action.type) {
+    case NOT_EKLE:
+      localStorageStateYaz(s10chLocalStorageKey, [
+        ...state.notlar,
+        action.payload,
+      ]);
 
-  if (eskiNotlar) {
-    return localStorageStateOku(key);
-  } else {
-    return baslangicDegerleri
+      console.log(localStorage.getItem(s10chLocalStorageKey));
+      return {
+        ...state,
+        notlar: [...state.notlar, action.payload],
+      };
+
+    case NOT_SIL:
+      return {
+        ...state,
+        notlar: state.notlar.filter((item) => item.id !== action.payload),
+      };
+    default:
+      return state;
   }
 }
