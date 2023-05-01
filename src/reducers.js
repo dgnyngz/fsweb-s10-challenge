@@ -32,7 +32,7 @@ export function reducer(state = baslangicDegerleri, action) {
       console.log(localStorage.getItem(s10chLocalStorageKey));
       return {
         ...state,
-        notlar: [...state.notlar, action.payload],
+        notlar: [action.payload, ...state.notlar],
       };
 
     case NOT_SIL:
